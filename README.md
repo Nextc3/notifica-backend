@@ -1,21 +1,20 @@
-# Asset Transfer REST API Sample
+# Cliente API REST
 
-This is a simple REST server written in golang with endpoints for chaincode invoke and query.
+Este módulo é um servidor REST API escrito em golang com endpoints para acesso ao chaincode da blockchain com invoke(ações que alteram estado) e query(ações que não alteram o estado).
 
   
-## Usage
+## Uso
 
 - Setup fabric test network and deploy the asset transfer chaincode by [following this instructions](https://hyperledger-fabric.readthedocs.io/en/release-2.4/test_network.html).
 
-- cd into rest-api-go directory
-- Download required dependencies using `go mod download`
-- Run `go run main.go` to run the REST server
+- Entre no diretório notifica-backend 
+- Baixe as dependências com o comando `go mod download`
+- Execute `go run main.go` para iniciar o servidor REST
 
 ## Sending Requests
+Invoke endpoint aceita solicitações POST com funções e argumentos de chaincode. O endpoint de consulta aceita solicitações get com função e argumentos de chaincode.
 
-Invoke endpoint accepts POST requests with chaincode function and arguments. Query endpoint accepts get requests with chaincode function and arguments.
-
-Sample chaincode invoke for the "createAsset" function. Response will contain transaction ID for a successful invoke.
+Um exemplo simples de usando invoke seria o método "createAsset" que cria uma novo asset Response will contain transaction ID for a successful invoke.
 
 ``` sh
 curl --request POST \

@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"notifica-backend"
+	"github.com/Nextc3/fabric-samples/asset-transfer-basic/notifica-backend/web"
+	//"rest-api-go/web"
+)
 
 func main() {
 	//Initialize setup for Org1
@@ -19,7 +21,7 @@ func main() {
 
 	orgSetup, err := web.Initialize(orgConfig)
 	if err != nil {
-		fmt.Println("Error initializing setup for Org1: ", err)
+		fmt.Println("Erro em inicializar setup de Org1: ", err)
 	}
 	web.Serve(web.OrgSetup(*orgSetup))
 }

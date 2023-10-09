@@ -24,8 +24,8 @@ type OrgSetup struct {
 func Serve(setups OrgSetup) {
 	http.HandleFunc("/query", setups.Query)
 	http.HandleFunc("/invoke", setups.Invoke)
-	fmt.Println("Listening (http://localhost:3000/)...")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
+	fmt.Println("Escutando (http://localhost:8080/)...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)
 	}
 }
