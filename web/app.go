@@ -22,8 +22,10 @@ type OrgSetup struct {
 
 // Serve starts http web server.
 func Serve(setups OrgSetup) {
-	http.HandleFunc("/query", setups.Query)
-	http.HandleFunc("/invoke", setups.Invoke)
+	//Fica pra depois fazer uma solução que implemente com query também
+	//http.HandleFunc("/query", setups.Query)
+	//http.HandleFunc("/invoke", setups.Invoke)
+	http.HandleFunc("/notificacao/", setups.Invoke)
 	fmt.Println("Escutando (http://localhost:8080/)...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println(err)
