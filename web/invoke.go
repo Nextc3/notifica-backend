@@ -1,7 +1,10 @@
 package web
 
 import (
+	"encoding/json"
 	"fmt"
+	notifica_model "github.com/Nextc3/notifica-model"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,6 +14,12 @@ import (
 
 // Invoke handles chaincode invoke requests.
 func (setup *OrgSetup) Invoke(w http.ResponseWriter, r *http.Request) {
+	header := w.Header()
+	header.Add("Access-Control-Allow-Origin", "*")
+	header.Add("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Content-Type", "application/json")
+	//header.Set("Access-Control-Allow-Origin", "*")
+
 	fmt.Println("Received Invoke request")
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %s", err)
@@ -37,11 +46,25 @@ func (setup *OrgSetup) Invoke(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Desculpa... :(")
 	}
-	args := r.Form["args"]
-	fmt.Printf("channel: %s, chaincode: %s, function: %s, args: %s\n", channelID, chainCodeName, function, args)
+	asset := notifica_model.Asset{}
+
+	_ = json.NewDecoder(r.Body).Decode(&asset)
+	//args := []string{"dataNascimento", asset.DataNascimento, "dataDiagnostico", asset.DataDiagnostico, "dataNotificacao", asset.DataNotificacao, "dataInicioSintomas", asset.DataInicioSintomas, "bairro", asset.Bairro, "cidade", asset.Cidade, "endereco", asset.Endereco, "estado", asset.Estado, "pais", asset.Pais, "doenca", asset.Doenca, "informacoesClinicas", asset.InformacoesClinicas, "sexo", asset.Sexo}
+	//args := r.Form["args"]
+	fmt.Printf("channel: %s, chaincode: %s, function: %s, args: %s\n", channelID, chainCodeName, function, asset)
 	network := setup.Gateway.GetNetwork(channelID)
 	contract := network.GetContract(chainCodeName)
-	txn_proposal, err := contract.NewProposal(function, client.WithArguments(args...))
+	resultado, err := contract.EvaluateTransaction("getUltimoId")
+	if err != nil {
+		log.Println("erro em buscar o último Id")
+	}
+	aux, _ := strconv.Atoi(string(resultado))
+	aux++
+	asset.Id = aux
+
+	nEmBytes, _ := json.Marshal(asset)
+	aString := string(nEmBytes)
+	txn_proposal, err := contract.NewProposal(function, client.WithArguments(aString))
 	if err != nil {
 		fmt.Fprintf(w, "Error creating txn proposal: %s", err)
 		return
