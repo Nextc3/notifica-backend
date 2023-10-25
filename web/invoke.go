@@ -56,7 +56,7 @@ func (setup *OrgSetup) Invoke(w http.ResponseWriter, r *http.Request) {
 	contract := network.GetContract(chainCodeName)
 	resultado, err := contract.EvaluateTransaction("getUltimoId")
 	if err != nil {
-		log.Println("erro em buscar o último Id")
+		log.Println("erro em buscar o últimoId")
 	}
 	aux, _ := strconv.Atoi(string(resultado))
 	aux++
