@@ -39,6 +39,7 @@ func (setup *OrgSetup) AssetHandler(w http.ResponseWriter, r *http.Request) {
 	//e evita repetição de código
 	asset := notifica_model.Asset{}
 	_ = json.NewDecoder(r.Body).Decode(&asset)
+	fmt.Println(asset)
 	//args := []string{"dataNascimento", asset.DataNascimento, "dataDiagnostico", asset.DataDiagnostico, "dataNotificacao", asset.DataNotificacao, "dataInicioSintomas", asset.DataInicioSintomas, "bairro", asset.Bairro, "cidade", asset.Cidade, "endereco", asset.Endereco, "estado", asset.Estado, "pais", asset.Pais, "doenca", asset.Doenca, "informacoesClinicas", asset.InformacoesClinicas, "sexo", asset.Sexo}
 	//args := r.Form["args"]
 	fmt.Printf("channel: %s, chaincode: %s, function: %s, args: %s\n", channelID, chainCodeName, function, asset)
@@ -65,7 +66,7 @@ func (setup *OrgSetup) AssetHandler(w http.ResponseWriter, r *http.Request) {
 	case r.Method == "GET":
 		obterTodasNotificacoes(w, r, contract)
 	case r.Method == "POST":
-		salvarNotificacao(w, r, contract)
+		salvarNotificacao(w, r, asset, contract)
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Desculpa... :(")
@@ -139,18 +140,12 @@ func obterTodasNotificacoes(w http.ResponseWriter, r *http.Request, contract *cl
 	fmt.Fprint(w, string(json))
 
 }
-func salvarNotificacao(w http.ResponseWriter, r *http.Request, contract *client.Contract) {
+func salvarNotificacao(w http.ResponseWriter, r *http.Request, asset notifica_model.Asset, contract *client.Contract) {
 	w.Header().Set("Content-Type", "application/json")
 
-	//vamos pegar os dados enviados pelo usuário via body
-	var asset notifica_model.Asset
+	log.Println("Armazenou do body no asset")
+	fmt.Println(asset)
 
-	err := json.NewDecoder(r.Body).Decode(&asset)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(formatJSONError(err.Error()))
-		return
-	}
 	log.Println("--> Transação de Submit: CreateAsset, cria ativos do tipo Asset")
 
 	resultado, err := contract.EvaluateTransaction("getUltimoId")
